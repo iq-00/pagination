@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pagination</title>
+    <style>
+      .show {
+        display: inline;
+      }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>current page <span>0</span></h1>
+
+    <div></div>
+
+    <button id="prev">page <span class="prev"></span></button>
+    <button id="next">page <span class="next">1</span></button>
+    <button id="end">... <span class="end"></span></button>
+
+    <script>
+      let span = document.querySelector("span");
+
+      document.querySelector("#prev").onclick = (ev) => {
+        fetch(`/page/${Number.parseInt(span.innerHTML) - 1}`)
+          .then((ful) => ful.text())
+          .then((ful) => {
+            document.querySelector("div").innerHTML = " ";
+            let response = JSON.parse(ful);
+            for (let i in response.details) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += response.details[i].content;
+              document.querySelector("div").append(h3);
+            }
+            if (response.details.length == 0) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += "The End...";
+              document.querySelector("div").append(h3);
+              document.querySelector("#end").className = "hide";
+              document.querySelector("#next").className = "hide";
+              document.querySelector("#prev").className = "show";
+            }
+            span.innerHTML = parseInt(span.innerHTML) - 1;
+            document.querySelector("#prev").className = "show";
+            document.querySelector(".next").innerHTML =
+              parseInt(span.innerHTML) + 1;
+            document.querySelector(".prev").innerHTML =
+              parseInt(span.innerHTML) - 1;
+            if (span.innerHTML == "0") {
+              document.querySelector("#prev").className = "hide";
+            }
+            document.querySelector("#next").className = "show";
+            document.querySelector("#end").className = "show";
+          });
+      };
+
+      document.querySelector("#end").onclick = (ev) => {
+        fetch(`/page/${9}`)
+          .then((ful) => ful.text())
+          .then((ful) => {
+            document.querySelector("div").innerHTML = " ";
+            let response = JSON.parse(ful);
+            for (let i in response.details) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += response.details[i].content;
+              document.querySelector("div").append(h3);
+            }
+            if (response.details.length == 0) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += "The End...";
+              document.querySelector("div").append(h3);
+            }
+            span.innerHTML = 9;
+            document.querySelector("#end").className = "hide";
+            document.querySelector("#next").className = "hide";
+            document.querySelector("#prev").className = "show";
+            document.querySelector(".prev").innerHTML =
+              parseInt(span.innerHTML) - 1;
+          });
+      };
+
+      document.querySelector("#next").onclick = (ev) => {
+        fetch(`/page/${Number.parseInt(span.innerHTML) + 1}`)
+          .then((ful) => ful.text())
+          .then((ful) => {
+            document.querySelector("div").innerHTML = " ";
+            let response = JSON.parse(ful);
+            for (let i in response.details) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += response.details[i].content;
+              document.querySelector("div").append(h3);
+            }
+            if (response.details.length == 0) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += "The End...";
+              document.querySelector("div").append(h3);
+              document.querySelector("#end").className = "hide";
+              document.querySelector("#next").className = "hide";
+              document.querySelector("#prev").className = "show";
+            }
+            span.innerHTML = parseInt(span.innerHTML) + 1;
+            document.querySelector("#prev").className = "show";
+            document.querySelector(".next").innerHTML =
+              parseInt(span.innerHTML) + 1;
+            document.querySelector(".prev").innerHTML =
+              parseInt(span.innerHTML) - 1;
+          });
+      };
+
+      if (span.innerText == "0") {
+        fetch("/first")
+          .then((ful) => ful.text())
+          .then((ful) => {
+            let response = JSON.parse(ful);
+            for (let i in response.details) {
+              let h3 = document.createElement("h3");
+              h3.innerHTML += response.details[i].content;
+              document.querySelector("div").append(h3);
+            }
+            document.querySelector(".end").innerHTML = response.totalLength;
+            span.innerHTML = 0;
+            document.querySelector("#prev").className = "hide";
+          });
+      }
+    </script>
+  </body>
+</html>
